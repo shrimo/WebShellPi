@@ -1,9 +1,19 @@
 import os
 import subprocess
-from flask import Flask, request, jsonify, render_template, session
+from flask import (
+    Flask,
+    request,
+    jsonify,
+    render_template,
+    session,
+    redirect,
+    url_for,
+    send_from_directory,
+)
 
-VERSION = "0.01a"
-DATE = "Mon Sep  2 04:24:28 AM EEST 2024"
+VERSION = "0.02"
+DATE = "Tue Sep  3 01:05:21 AM EEST 2024"
+
 
 class WebShell:
     """
@@ -85,12 +95,61 @@ class WebShellApp:
         self.app = Flask(__name__)
         self.app.secret_key = "your_secret_key_here"
         self.shell = WebShell()
-        self.console_height = console_height  # Set the console height
-        self.fixed_height = fixed_height  # Control whether the console height is fixed
+        self.console_height = console_height
+        self.fixed_height = fixed_height
 
         # Define routes
         self.app.add_url_rule("/", view_func=self.index)
         self.app.add_url_rule("/run", view_func=self.run_command, methods=["POST"])
+        self.app.add_url_rule(
+            "/edit/<path:filename>", view_func=self.edit_file, methods=["GET", "POST"]
+        )
+        self.app.add_url_rule("/view/<path:filename>", view_func=self.view_file)
+        self.app.add_url_rule("/files/<path:filename>", view_func=self.serve_file)
+
+    def serve_file(self, filename):
+        """
+        Serve the requested file from the current directory.
+        """
+        return send_from_directory(self.shell.get_current_directory(), filename)
+
+    def edit_file(self, filename):
+        """
+        Edit a file specified by the filename.
+        """
+        if request.method == "POST":
+            # Save the changes to the file
+            new_content = request.form.get("file_content")
+            try:
+                with open(filename, "w") as file:
+                    file.write(new_content)
+                return redirect(url_for("index"))
+            except Exception as e:
+                return jsonify({"output": str(e), "status": "error"})
+        else:
+            # Load the content of the file
+            try:
+                with open(filename, "r") as file:
+                    content = file.read()
+                return render_template(
+                    "editor.html", filename=filename, content=content
+                )
+            except Exception as e:
+                return jsonify({"output": str(e), "status": "error"})
+
+    def view_file(self, filename):
+        """
+        View an image file specified by the filename.
+        """
+        try:
+            # Check if file exists
+            file_path = os.path.join(self.shell.get_current_directory(), filename)
+            if os.path.isfile(file_path):
+                return render_template("viewer.html", filename=filename)
+            else:
+                return jsonify({"output": "File not found.", "status": "error"})
+        except Exception as e:
+            return jsonify({"output": str(e), "status": "error"})
 
     def index(self):
         """
@@ -116,19 +175,29 @@ class WebShellApp:
                 self.shell.set_current_directory(session["current_dir"])
 
             if "clear" in command:
-                # Clear the console
                 output = ""
             elif "ver" in command:
-                # app version
                 output = f"WebShellPi {VERSION}, ({DATE})"
-            elif "edit" in command:
-                # edit file
-                output = 'edit -> test'
-                return jsonify({"output": output, "status": "success"})
+            elif command.startswith("edit "):
+                filename = command.split(" ", 1)[1]
+                return jsonify(
+                    {
+                        "output": f"Editing file: {filename}",
+                        "redirect": url_for("edit_file", filename=filename),
+                    }
+                )
+            elif command.startswith("view "):
+                filename = command.split(" ", 1)[1]
+                return jsonify(
+                    {
+                        "output": f"Viewing image: {filename}",
+                        "redirect": url_for("view_file", filename=filename),
+                    }
+                )
             else:
                 output = self.shell.execute_command(command)
-            session["current_dir"] = self.shell.get_current_directory()
 
+            session["current_dir"] = self.shell.get_current_directory()
             return jsonify({"output": output, "status": "success"})
         except Exception as e:
             return jsonify({"output": str(e), "status": "error"})

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Image - Web Shell Pi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="container">
+        <h2>Viewing: {{ filename }}</h2>
+        <div id="image-container">
+            <img src="{{ url_for('serve_file', filename=filename) }}" alt="Image not found" style="max-width: 100%; height: auto;">
+        </div>
+        <br/>
+        <a href="{{ url_for('index') }}">Back to Shell</a>
+    </div>
+</body>
+</html>

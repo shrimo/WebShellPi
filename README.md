@@ -1,8 +1,8 @@
-# Web Shell Pi
-
-![Screenshot 01](screenshot.png)
+![logo](./image/logo.png)
 
 **Web Shell Pi** is a web-based shell interface built using Flask. It provides a terminal-like environment in your browser, allowing you to execute shell commands, navigate directories, and interact with your filesystem just like in a traditional terminal. It offers customizable features such as command history, output coloring, and configurable console height.
+
+![Screenshot 01](./image/screenshot.png)
 
 ## Features
 
@@ -67,6 +67,23 @@ web_shell_app = WebShellApp(console_height=300, fixed_height=False)
 - **Enter Commands:** Type your shell commands into the input field and press Enter to execute.
 - **Navigate Directories:** Use `cd <directory>` to change the current directory.
 - **View Command Output:** The output of your commands will be displayed in the terminal area.
+
+## Usage
+
+### Shell Commands
+Enter shell commands into the input field at the bottom of the terminal interface. The output of the command will be displayed in the terminal window.
+
+### Edit Files
+To edit a text file, use the command:
+```bash
+edit path_to_file
+```
+
+### View Images
+To view an image file, use the command:
+```bash
+view path_to_file
+```
 
 ## Contributing
 

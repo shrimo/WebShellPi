@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit File - Web Shell Pi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="container">
+        <h2>Editing: {{ filename }}</h2>
+        <form method="POST">
+            <textarea name="file_content" rows="20" cols="80">{{ content }}</textarea>
+            <br/>
+            <button type="submit">Save</button>
+            <a href="{{ url_for('index') }}">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>

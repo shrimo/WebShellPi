@@ -86,6 +86,8 @@
             .then(data => {
                 if (command === 'clear') {
                     outputDiv.innerHTML = '';
+                } else if (data.redirect) {
+                    window.location.href = data.redirect;
                 } else {
                     let outputClass = "output-success";
                     if (data.output.toLowerCase().includes("error") || data.status === "error") {
