@@ -1,0 +1,110 @@
+/* Monokai theme for text editor */
+body {
+    background-color: #272822;
+    color: #f8f8f2;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 20px;
+}
+#container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+#terminal {
+    background-color: #272822;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #75715e;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-size: 16px;
+    line-height: 1.4;
+    width: 100%;
+    color: #f8f8f2;
+    {% if fixed_height %}
+    height: {{ console_height }}px;
+    overflow-y: auto;
+    {% endif %}
+}
+#input-line {
+    display: flex;
+}
+#prompt {
+    color: #66d9ef;
+    margin-right: 5px;
+}
+#command {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: inherit;
+    flex-grow: 1;
+    font-family: inherit;
+    font-size: inherit;
+}
+#output {
+    white-space: pre-wrap;
+    margin-top: 10px;
+}
+.output-success {
+    color: #a6e22e;
+}
+.output-error {
+    color: #f92672;
+}
+.output-warning {
+    color: #e6db74;
+}
+h1, h2 {
+    color: #f92672;
+    text-align: left;
+}
+
+a {
+    color: #66d9ef;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+input[type="file"], input[type="submit"] {
+    background-color: #f92672;
+    color: #f8f8f2;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+input[type="submit"] {
+    background-color: #66d9ef;
+}
+
+textarea {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    border: 1px solid #75715e;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: monospace;
+}
+
+.file-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.file-list li {
+    margin: 5px 0;
+}
+
+.file-list li a {
+    color: #f92672;
+    text-decoration: none;
+}
+
+.file-list li a:hover {
+    text-decoration: underline;
+}
