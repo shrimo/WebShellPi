@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Shell Pi</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
     <div id="container">
         <h2>Web Shell Pi</h2>
         <div id="terminal">
             <div id="output"></div>
             <div id="input-line">
-                <span id="prompt">user@webshell:<span id="current-dir"></span>$</span>
+                <span id="prompt">user@wsp:<span id="current-dir"></span>$</span>
                 <input type="text" id="command" autofocus onkeydown="handleKey(event)">
             </div>
         </div>
@@ -22,27 +24,38 @@
         let commandHistory = [];
         let historyIndex = -1;
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             updatePrompt();
             focusCommandLine();
         });
 
+        function reloadDiv_input_line(currentDir) {
+            var div = document.getElementById('input-line');
+            div.innerHTML = `
+                <span id="prompt">user@wsp:<span id="current-dir">${currentDir}</span>$</span>
+                <input type="text" id="command" autofocus onkeydown="handleKey(event)">
+            `;
+        }
+
+
         function updatePrompt() {
-            fetch('/run', {
+            return fetch('/run', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ command: 'pwd' }),
             })
-            .then(response => response.json())
-            .then(data => {
-                let fullPath = data.output.trim();
-                let pathParts = fullPath.split('/');
-                let shortPath = pathParts.slice(-2).join('/');
-                document.getElementById('current-dir').textContent = shortPath;
-            });
+                .then(response => response.json())
+                .then(data => {
+                    let fullPath = data.output.trim();
+                    let pathParts = fullPath.split('/');
+                    let shortPath = pathParts.slice(-2).join('/');
+                    document.getElementById('current-dir').textContent = shortPath;
+                    return shortPath;
+                });
         }
+
 
         function handleKey(event) {
             let commandInput = document.getElementById('command');
@@ -82,33 +95,37 @@
                 },
                 body: JSON.stringify({ command: command }),
             })
-            .then(response => response.json())
-            .then(data => {
-                if (command === 'clear') {
-                    outputDiv.innerHTML = '';
-                } else if (data.redirect) {
-                    window.location.href = data.redirect;
-                } else {
-                    let outputClass = "output-success";
-                    if (data.output.toLowerCase().includes("error") || data.status === "error") {
-                        outputClass = "output-error";
-                    } else if (data.output.toLowerCase().includes("warning")) {
-                        outputClass = "output-warning";
+                .then(response => response.json())
+                .then(data => {
+                    if (command === 'clear') {
+                        outputDiv.innerHTML = '';
+                    } else if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        let outputClass = "output-success";
+                        if (data.output.toLowerCase().includes("error") || data.status === "error") {
+                            outputClass = "output-error";
+                        } else if (data.output.toLowerCase().includes("warning")) {
+                            outputClass = "output-warning";
+                        }
+                        outputDiv.innerHTML += `<span class="${outputClass}">${data.output}</span>\n`;
                     }
-                    outputDiv.innerHTML += `<span class="${outputClass}">${data.output}</span>\n`;
-                }
-                outputDiv.scrollTop = outputDiv.scrollHeight;
-                if (command.startsWith('cd')) {
-                    updatePrompt();
-                }
-                focusCommandLine();
-            })
-            .catch((error) => {
-                outputDiv.innerHTML += `<span class="output-error">Error: ${error}</span>\n`;
-            })
-            .finally(() => {
-                commandInput.value = '';
-            });
+                    outputDiv.scrollTop = outputDiv.scrollHeight;
+
+                    if (command.startsWith('cd')) {
+                        updatePrompt().then(shortPath => {
+                            reloadDiv_input_line(shortPath);
+                        });
+                    } else {
+                        focusCommandLine();
+                    }
+                })
+                .catch((error) => {
+                    outputDiv.innerHTML += `<span class="output-error">Error: ${error}</span>\n`;
+                })
+                .finally(() => {
+                    commandInput.value = '';
+                });
         }
 
         function focusCommandLine() {
@@ -116,4 +133,5 @@
         }
     </script>
 </body>
+
 </html>

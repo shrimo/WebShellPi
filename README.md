@@ -1,4 +1,4 @@
-![logo](./image/logo.png)
+![logo][def_logo]
 
 **Web Shell Pi** is a web-based shell interface built using Flask. It provides a terminal-like environment in your browser, allowing you to execute shell commands, navigate directories, and interact with your filesystem just like in a traditional terminal. It offers customizable features such as command history, output coloring, and configurable console height.
 
@@ -95,3 +95,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 
 
+
+
+[def_logo]: ./image/logo2.png
