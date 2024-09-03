@@ -97,4 +97,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 
 
-[def_logo]: ./image/logo2.png
+[def_logo]: ./image/logo.png

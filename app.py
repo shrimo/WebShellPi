@@ -35,7 +35,6 @@ class WebShell:
     def execute_command(self, command):
         """
         Execute the given shell command.
-        pr
         If the command is 'cd', change the directory; otherwise, run the command.
         """
         if command.startswith("cd"):
