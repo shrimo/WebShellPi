@@ -108,3 +108,12 @@ textarea {
 .file-list li a:hover {
     text-decoration: underline;
 }
+.dir {
+    color: #4CAF50; /* Зеленый цвет для директорий */
+    font-weight: bold;
+}
+
+.file {
+    color: #FFFFFF; /* Белый цвет для файлов */
+}
+

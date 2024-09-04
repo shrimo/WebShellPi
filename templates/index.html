@@ -86,7 +86,9 @@
             commandHistory.push(command);
             historyIndex = commandHistory.length;
 
-            outputDiv.innerHTML += `<span>${document.getElementById('prompt').innerHTML} ${command}</span>\n`;
+            let promptStyle = document.getElementById('prompt').outerHTML;
+
+            outputDiv.innerHTML += `<span>${promptStyle} ${command}</span>\n`;
 
             fetch('/run', {
                 method: 'POST',
@@ -95,37 +97,37 @@
                 },
                 body: JSON.stringify({ command: command }),
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (command === 'clear') {
-                        outputDiv.innerHTML = '';
-                    } else if (data.redirect) {
-                        window.location.href = data.redirect;
-                    } else {
-                        let outputClass = "output-success";
-                        if (data.output.toLowerCase().includes("error") || data.status === "error") {
-                            outputClass = "output-error";
-                        } else if (data.output.toLowerCase().includes("warning")) {
-                            outputClass = "output-warning";
-                        }
-                        outputDiv.innerHTML += `<span class="${outputClass}">${data.output}</span>\n`;
+            .then(response => response.json())
+            .then(data => {
+                if (command === 'clear') {
+                    outputDiv.innerHTML = '';
+                } else if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    let outputClass = "output-success";
+                    if (data.output.toLowerCase().includes("error") || data.status === "error") {
+                        outputClass = "output-error";
+                    } else if (data.output.toLowerCase().includes("warning")) {
+                        outputClass = "output-warning";
                     }
-                    outputDiv.scrollTop = outputDiv.scrollHeight;
+                    outputDiv.innerHTML += `<span class="${outputClass}">${data.output}</span>\n`;
+                }
+                outputDiv.scrollTop = outputDiv.scrollHeight;
 
-                    if (command.startsWith('cd')) {
-                        updatePrompt().then(shortPath => {
-                            reloadDiv_input_line(shortPath);
-                        });
-                    } else {
-                        focusCommandLine();
-                    }
-                })
-                .catch((error) => {
-                    outputDiv.innerHTML += `<span class="output-error">Error: ${error}</span>\n`;
-                })
-                .finally(() => {
-                    commandInput.value = '';
-                });
+                if (command.startsWith('cd')) {
+                    updatePrompt().then(shortPath => {
+                        reloadDiv_input_line(shortPath);
+                    });
+                } else {
+                    focusCommandLine();
+                }
+            })
+            .catch((error) => {
+                outputDiv.innerHTML += `<span class="output-error">Error: ${error}</span>\n`;
+            })
+            .finally(() => {
+                commandInput.value = '';
+            });
         }
 
         function focusCommandLine() {

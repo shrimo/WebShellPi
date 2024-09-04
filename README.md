@@ -74,12 +74,18 @@ web_shell_app = WebShellApp(console_height=300, fixed_height=False)
 Enter shell commands into the input field at the bottom of the terminal interface. The output of the command will be displayed in the terminal window.
 
 ### Edit Files
+
+![edit][def_edit]
+
 To edit a text file, use the command:
 ```bash
 edit path_to_file
 ```
 
 ### View Images
+
+![view][def_view]
+
 To view an image file, use the command:
 ```bash
 view path_to_file
@@ -98,3 +104,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 
 [def_logo]: ./image/logo.png
+[def_view]: ./image/screenshot_view.png
+[def_edit]: ./image/screenshot_edit.png

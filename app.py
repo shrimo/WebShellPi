@@ -11,8 +11,8 @@ from flask import (
     send_from_directory,
 )
 
-VERSION = "0.02"
-DATE = "Tue Sep  3 01:05:21 AM EEST 2024"
+VERSION = "0.03"
+DATE = "Wed Sep  4 06:15:54 AM EEST 2024"
 
 
 class WebShell:
@@ -62,19 +62,58 @@ class WebShell:
         except Exception as e:
             return str(e)
 
+    def list_directory_contents(self):
+        """
+        Custom implementation of 'ls' command with color-coded output.
+        Directories are displayed first, followed by files.
+        """
+        try:
+            # Get all entries in the current directory
+            entries = os.listdir(self.current_dir)
+            
+            # Separate directories and files
+            directories = []
+            files = []
+            for entry in entries:
+                full_path = os.path.join(self.current_dir, entry)
+                if os.path.isdir(full_path):
+                    directories.append(entry)
+                else:
+                    files.append(entry)
+
+            # Sort directories and files
+            directories.sort()
+            files.sort()
+
+            # Generate the output with directories first, then files
+            output = ""
+            for directory in directories:
+                output += f"<span class='dir'>{directory}/</span>\n"
+            for file in files:
+                output += f"<span class='file'>{file}</span>\n"
+
+            return output
+        except Exception as e:
+            return str(e)
+
+
     def run_shell_command(self, command):
         """
         Run a non-'cd' shell command and capture its output.
         """
         try:
-            result = subprocess.run(
-                command,
-                shell=True,
-                capture_output=True,
-                text=True,
-                cwd=self.current_dir,
-            )
-            return result.stdout + result.stderr
+            if command == "ls":
+                output = self.list_directory_contents()
+            else:
+                result = subprocess.run(
+                    command,
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                    cwd=self.current_dir,
+                )
+                output = result.stdout + result.stderr
+            return output
         except Exception as e:
             return str(e)
 
