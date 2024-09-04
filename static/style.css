@@ -109,11 +109,11 @@ textarea {
     text-decoration: underline;
 }
 .dir {
-    color: #4CAF50; /* Зеленый цвет для директорий */
+    color: #4CAF50;
     font-weight: bold;
 }
 
 .file {
-    color: #FFFFFF; /* Белый цвет для файлов */
+    color: #FFFFFF;
 }
 
